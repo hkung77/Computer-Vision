@@ -1,12 +1,11 @@
-function [] = SeamFunction( image,  desired_height, desired_width)
+function [] = SeamInsert( image, desired_height, desired_width )
 %   This function takes 3 parameters
 %       1. an image as a string
 %       2. the desired height of your image
 %       3. the desired width of your image
 
-% This function rescales the given image to a lower resolution width and height without
-% modifying or distorting the critical contents/ components of the image 
-
+% This function rescales the given image to a higher resolution width and height without
+% modifying or distorying the critical contents/ components of the image 
     %% read image 
     img =  im2double(imread(image));
     
@@ -18,8 +17,8 @@ function [] = SeamFunction( image,  desired_height, desired_width)
     %% calculate resolution difference
     HEIGHT = size(img,1);
     WIDTH = size(img,2);
-    diff_width = WIDTH - desired_width;
-    diff_height = HEIGHT - desired_height;
+    diff_width = desired_width - WIDTH;
+    diff_height = desired_height - HEIGHT;
     
     if(diff_width > 0)
         for iteration=1:diff_width
@@ -100,25 +99,25 @@ function [] = SeamFunction( image,  desired_height, desired_width)
                     seam(i,1) = COL;
             end
 
-            %% Removing elements from column of image
+            %% Adding elements from column of image
 
-            new_image_red = zeros(HEIGHT,WIDTH-1);
-            new_image_green = zeros(HEIGHT,WIDTH-1);
-            new_image_blue = zeros(HEIGHT,WIDTH-1);
+            new_image_red = zeros(HEIGHT,WIDTH+1);
+            new_image_green = zeros(HEIGHT,WIDTH+1);
+            new_image_blue = zeros(HEIGHT,WIDTH+1);
 
             for i=1:size(seam,1)
                 if ( seam(i,1) == 1 )        
-                    temp_red = img_red(i,seam(i,1)+1:WIDTH);
-                    temp_green = img_green(i,seam(i,1)+1:WIDTH);
-                    temp_blue = img_blue(i,seam(i,1)+1:WIDTH);
+                    temp_red = horzcat(img_red(i,1), img_red(i,seam(i,1):WIDTH));
+                    temp_green = horzcat(img_green(i,1), img_green(i,seam(i,1):WIDTH));
+                    temp_blue = horzcat(img_blue(i,1), img_blue(i,seam(i,1):WIDTH));
                 elseif (seam(i,1) == WIDTH)
-                    temp_red = img_red(i,1:WIDTH-1);
-                    temp_green = img_green(i,1:WIDTH-1);
-                    temp_blue = img_blue(i,1:WIDTH-1);
+                    temp_red = horzcat(img_red(i,1:WIDTH),img_red(i,WIDTH));
+                    temp_green = horzcat(img_green(i,1:WIDTH),img_green(i,WIDTH));
+                    temp_blue = horzcat(img_blue(i,1:WIDTH), img_blue(i,WIDTH));
                 else
-                    temp_red = horzcat(img_red(i,1:seam(i,1)-1), img_red(i,seam(i,1)+1:WIDTH));
-                    temp_green = horzcat(img_green(i,1:seam(i,1)-1), img_green(i,seam(i,1)+1:WIDTH));
-                    temp_blue = horzcat(img_blue(i,1:seam(i,1)-1), img_blue(i,seam(i,1)+1:WIDTH));
+                    temp_red = horzcat(horzcat(img_red(i,1:seam(i,1)), img_red(i,seam(i,1)) ), img_red(i,seam(i,1)+1:WIDTH));
+                    temp_green = horzcat(horzcat(img_green(i,1:seam(i,1)), img_green(i,seam(i,1)) ), img_green(i,seam(i,1)+1:WIDTH));
+                    temp_blue = horzcat(horzcat(img_blue(i,1:seam(i,1)), img_green(i,seam(i,1)) ), img_blue(i,seam(i,1)+1:WIDTH));
                 end
                 new_image_red(i,:) = temp_red;
                 new_image_green(i,:) = temp_green;
@@ -215,25 +214,25 @@ function [] = SeamFunction( image,  desired_height, desired_width)
                     seam(i,1) = COL;
             end
 
-            %% Removing elements from column of image
+            %% Inserting elements from column of image
 
-            new_image_red = zeros(HEIGHT,WIDTH-1);
-            new_image_green = zeros(HEIGHT,WIDTH-1);
-            new_image_blue = zeros(HEIGHT,WIDTH-1);
+            new_image_red = zeros(HEIGHT,WIDTH+1);
+            new_image_green = zeros(HEIGHT,WIDTH+1);
+            new_image_blue = zeros(HEIGHT,WIDTH+1);
 
             for i=1:size(seam,1)
-                if ( seam(i,1) == 1 )        
-                    temp_red = img_red(i,seam(i,1)+1:WIDTH);
-                    temp_green = img_green(i,seam(i,1)+1:WIDTH);
-                    temp_blue = img_blue(i,seam(i,1)+1:WIDTH);
+                if ( seam(i,1) == 1 )           
+                    temp_red = horzcat(img_red(i,1), img_red(i,seam(i,1):WIDTH));
+                    temp_green = horzcat(img_green(i,1), img_green(i,seam(i,1):WIDTH));
+                    temp_blue = horzcat(img_blue(i,1), img_blue(i,seam(i,1):WIDTH));
                 elseif (seam(i,1) == WIDTH)
-                    temp_red = img_red(i,1:WIDTH-1);
-                    temp_green = img_green(i,1:WIDTH-1);
-                    temp_blue = img_blue(i,1:WIDTH-1);
+                    temp_red = horzcat(img_red(i,1:WIDTH),img_red(i,WIDTH));
+                    temp_green = horzcat(img_green(i,1:WIDTH),img_green(i,WIDTH));
+                    temp_blue = horzcat(img_blue(i,1:WIDTH), img_blue(i,WIDTH));
                 else
-                    temp_red = horzcat(img_red(i,1:seam(i,1)-1), img_red(i,seam(i,1)+1:WIDTH));
-                    temp_green = horzcat(img_green(i,1:seam(i,1)-1), img_green(i,seam(i,1)+1:WIDTH));
-                    temp_blue = horzcat(img_blue(i,1:seam(i,1)-1), img_blue(i,seam(i,1)+1:WIDTH));
+                    temp_red = horzcat(horzcat(img_red(i,1:seam(i,1)), img_red(i,seam(i,1)) ), img_red(i,seam(i,1)+1:WIDTH));
+                    temp_green = horzcat(horzcat(img_green(i,1:seam(i,1)), img_green(i,seam(i,1)) ), img_green(i,seam(i,1)+1:WIDTH));
+                    temp_blue = horzcat(horzcat(img_blue(i,1:seam(i,1)), img_green(i,seam(i,1)) ), img_blue(i,seam(i,1)+1:WIDTH));
                 end
                 new_image_red(i,:) = temp_red;
                 new_image_green(i,:) = temp_green;
@@ -249,3 +248,5 @@ function [] = SeamFunction( image,  desired_height, desired_width)
     
     imshow(final_image, []);
 end
+
+
